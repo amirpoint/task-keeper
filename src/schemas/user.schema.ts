@@ -5,12 +5,6 @@ export enum ROLES {
     ADMIN = 'Admin',
 }
 
-
-export enum ROLES {
-    USER = 'User',
-    ADMIN = 'Admin',
-}
-
 @Schema({
     timestamps: true,
 })
