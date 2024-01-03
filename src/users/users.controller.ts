@@ -1,12 +1,14 @@
-import { Controller, Delete, Get, Patch, Post } from "@nestjs/common";
-import { get } from "http";
-
+import { Body, Controller, Delete, Get, Patch, Post } from "@nestjs/common";
+import { AddNewUserDto } from "./dto/addnewuser.dto";
+import { UsersService } from "./users.service";
 
 @Controller('dashboard')
 export class UsersController {
+    constructor(private usersService: UsersService) {}
     
     @Post('users')
-    addNewUser() {
+    addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
+        return this.usersService.addNewUser(addNewUserDto);
 
     }
 
