@@ -1,10 +1,11 @@
-import { IsNotEmpty, IsNumber, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { IsDefined, IsEnum, IsNotEmpty, IsNumber, MaxLength, MinLength } from "class-validator";
 import { ROLES } from "src/schemas/user.schema";
 
 
 
 export class AddNewUserDto {
-
+    
+    @IsDefined()
     @IsNumber()
     readonly user_id: number;
     
@@ -17,7 +18,7 @@ export class AddNewUserDto {
     readonly password: string;
 
     @IsNotEmpty({ message: 'admin_perm is required.'})
-    @ValidateNested()
+    @IsEnum(ROLES)
     readonly admin_perm: ROLES;
     
     readonly avatar: string;

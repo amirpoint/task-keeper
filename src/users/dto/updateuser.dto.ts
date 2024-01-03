@@ -3,9 +3,6 @@ import { ROLES } from "src/schemas/user.schema";
 
 export class UpdateUserDto {
 
-    @IsNumber()
-    readonly user_id: number;
-    
     readonly username: string;
 
     @MinLength(8, { message: 'too short pw.'})
