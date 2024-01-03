@@ -1,4 +1,5 @@
-import { IsNumber, MaxLength, MinLength, IsEnum, ValidateNested } from "class-validator";
+import { IsNumber, MaxLength, MinLength, IsEnum } from "class-validator";
+import { ROLES } from "src/schemas/user.schema";
 
 export class UpdateUserDto {
 
@@ -11,6 +12,6 @@ export class UpdateUserDto {
     @MaxLength(16, { message: 'too long pw.'})
     readonly password: string;
 
-    // @ValidateNested()
-    // readonly admin_perm: ROLES;
+    @IsEnum(ROLES)
+    readonly admin_perm: ROLES;
 }
