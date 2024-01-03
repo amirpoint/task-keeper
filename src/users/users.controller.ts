@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UsersService } from "./users.service";
 
@@ -13,7 +14,7 @@ export class UsersController {
     }
 
     @Get('users/:id')
-    getUser() {
+    getUser(@Param() id) : Promise<User[]> {
 
     }
 

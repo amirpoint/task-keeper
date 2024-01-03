@@ -15,8 +15,8 @@ export class UsersService {
         @InjectModel(User.name)
         private userModel: Model<User>,
         private jwtService: JwtService,
-    ) {}
-    
+    ) { }
+
     async addNewUser(addNewUserDto: AddNewUserDto): Promise<{ token: string }> {
         const { username, password, admin_perm, avatar } = addNewUserDto;
 
@@ -35,5 +35,15 @@ export class UsersService {
         const token = this.jwtService.sign({ id: user._id });
 
         return { token }
+    }
+
+    async getUser(id): Promise<User> {
+        const user = await this.userModel.findOne({
+            user_id: id,
+        }, {
+            "_id": 0,
+            "__v": 0
+        });
+
     }
 }
