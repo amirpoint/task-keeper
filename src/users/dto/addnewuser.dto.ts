@@ -1,4 +1,4 @@
-import { IsDefined, IsEnum, IsNotEmpty, IsNumber, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { IsDefined, IsEnum, IsNotEmpty, IsNumber, MaxLength, MinLength } from "class-validator";
 import { ROLES } from "src/schemas/user.schema";
 
 
