@@ -31,26 +31,12 @@ export class AuthService {
             throw new UnauthorizedException('Invalid email or password.');
         }
 
-        const token = this.jwtService.sign({ id: user._id });
+        const payload = {
+            name: user.username,
+            role: user.admin_perm
+        }
 
-        return { token };
-    }
-
-    async signUp(signUpDto): Promise<{ token: string }> {
-        const { username, password, admin_perm, avatar } = signUpDto;
-
-        const hashedPassword = await bcrypt.hash(password, 16);
-
-        const user = await this.userModel.create({
-            username,
-            avatar,
-            password: hashedPassword,
-
-        });
-
-        const token = this.jwtService.sign({ id: user._id });
-
-        return { token }
+        return { token: this.jwtService.sign(payload)};
     }
 
 

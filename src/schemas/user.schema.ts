@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-export enum ROLES {
+export enum ROLE {
     USER = "User",
     ADMIN = "Admin",
 }
@@ -20,7 +20,7 @@ export class User {
     password: string;
 
     @Prop({ required: true, default: 'User' })
-    admin_perm: ROLES;
+    admin_perm: ROLE;
 
     @Prop({ required: false })
     avatar: string;
