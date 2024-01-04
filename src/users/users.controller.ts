@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "src/common/jwt.guard";
 import { User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
-import { JwtAuthGuard } from "./helpers/jwt.guard";
 import { UsersService } from "./users.service";
 
 @Controller('dashboard')
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
-    @Post('users')
     @UseGuards(JwtAuthGuard)
+    @Post('users')
     addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
         return this.usersService.addNewUser(addNewUserDto);
 
