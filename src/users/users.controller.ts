@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@n
 import { JwtAuthGuard } from "src/common/jwt.guard";
 import { Roles } from "src/common/roles.decorator";
 import { RolesGuard } from "src/common/roles.guard";
-import { User } from "src/schemas/user.schema";
+import { Role, User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { UsersService } from "./users.service";
@@ -12,28 +12,27 @@ export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Post('users')
-    @UseGuards(RolesGuard)
-    @Roles('Admin')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.ADMIN)
     addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
         return this.usersService.addNewUser(addNewUserDto);
 
     }
 
     @Get('users/:username')
-    @UseGuards(RolesGuard)
-    @Roles('Admin')
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.ADMIN)
     getUser(@Param() params: any): Promise<User> {
-        
+
         return this.usersService.getUser(params.username);
 
     }
 
     @Patch('users/:username')
-    @UseGuards(RolesGuard)
-    @Roles('Admin')
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.ADMIN)
     updateUser(
-        @Param() username : object,
+        @Param() username: object,
         @Body() updateUserDto: UpdateUserDto
     ): Promise<User> {
         return this.usersService.updateUser(username, updateUserDto);
@@ -41,9 +40,9 @@ export class UsersController {
     }
 
     @Delete('users/:username')
-    @UseGuards(RolesGuard)
-    @Roles('Admin')
-    deleteUser(@Param() username: object) : Promise<{ msg }> {
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles(Role.ADMIN)
+    deleteUser(@Param() username: object): Promise<{ msg }> {
         return this.usersService.deleteUser(username);
 
     }

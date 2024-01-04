@@ -1,5 +1,6 @@
 import { Body, Controller, Post, UseGuards } from "@nestjs/common";
 import { Res } from "@nestjs/common/decorators";
+import { Response } from "express";
 import { JwtAuthGuard } from "src/common/jwt.guard";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "./dto/signin.dto";
@@ -9,10 +10,17 @@ import { SignInDto } from "./dto/signin.dto";
 export class AuthController {
     constructor(private authService: AuthService) { }
 
-    @UseGuards(JwtAuthGuard)
     @Post('login')
-    signIn(@Body() signInDto: SignInDto): Promise<{ token: string }> {
-        return this.authService.signIn(signInDto);
+    @UseGuards(JwtAuthGuard)
+    signIn(
+        @Body() signInDto: SignInDto,
+        @Res({passthrough: true}) res: Response
+    ): Promise<{ msg: string }> {
+        const token = this.authService.signIn(signInDto);
+        const secretData = { token, refreshToken: ''}
+        res.cookie('auth-cookie', secretData, {httpOnly: true});
+        return { msg: 'success.' }
     }
+
 
 }
