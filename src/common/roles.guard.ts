@@ -3,8 +3,6 @@ import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
-import { UserModule } from 'src/users/users.module';
-// import { UserService } from '../user/user.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -13,7 +11,7 @@ export class RolesGuard implements CanActivate {
     private userModel: Model<User>,) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    const roles = this.reflector.get<number[]>('roles', context.getHandler());
     const request = context.switchToHttp().getRequest();
     console.log(request);
     console.log(roles);
