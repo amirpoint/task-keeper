@@ -3,8 +3,8 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PassportModule } from "@nestjs/passport";
+import { JwtStrategy } from "src/common/jwt.strategy";
 import { UserSchema } from "src/schemas/user.schema";
-import { JwtStrategy } from "./helpers/jwt.strategy";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
@@ -31,7 +31,7 @@ import { UsersService } from "./users.service";
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     ],
     controllers: [UsersController],
-    providers: [UsersService, JwtStrategy],
+    providers: [UsersService],
 })
 export class UserModule {
 

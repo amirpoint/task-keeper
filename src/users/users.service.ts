@@ -11,9 +11,6 @@ const firstUserId = 100;
 
 @Injectable()
 export class UsersService {
-    deleteOne(arg0: { username: string; }): Promise<User> {
-        throw new Error("Method not implemented.");
-    }
     constructor(
         @InjectModel(User.name)
         private userModel: Model<User>,
