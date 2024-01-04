@@ -1,7 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "src/common/jwt.guard";
 import { Roles } from "src/common/roles.decorator";
-import { RolesGuard } from "src/common/roles.guard";
 import { Role, User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
@@ -12,16 +10,16 @@ export class UsersController {
     constructor(private usersService: UsersService) { }
 
     @Post('users')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.ADMIN)
-    addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles(Role.ADMIN)
+    addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<User> {
         return this.usersService.addNewUser(addNewUserDto);
 
     }
 
     @Get('users/:username')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.ADMIN)
+    // @UseGuards(JwtAuthGuard,RolesGuard)
+    // @Roles(Role.ADMIN)
     getUser(@Param() params: any): Promise<User> {
 
         return this.usersService.getUser(params.username);
@@ -29,8 +27,8 @@ export class UsersController {
     }
 
     @Patch('users/:username')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.ADMIN)
+    // @UseGuards(JwtAuthGuard,RolesGuard)
+    // @Roles(Role.ADMIN)
     updateUser(
         @Param() username: object,
         @Body() updateUserDto: UpdateUserDto
@@ -40,8 +38,8 @@ export class UsersController {
     }
 
     @Delete('users/:username')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles(Role.ADMIN)
+    // @UseGuards(JwtAuthGuard,RolesGuard)
+    // @Roles(Role.ADMIN)
     deleteUser(@Param() username: object): Promise<{ msg }> {
         return this.usersService.deleteUser(username);
 

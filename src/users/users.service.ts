@@ -6,6 +6,7 @@ import { User } from "src/schemas/user.schema";
 import * as bcrypt from "bcrypt";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
+import { Tokens } from "src/auth/types";
 
 const firstUserId = 100;
 
@@ -29,10 +30,10 @@ export class UsersService {
         return latestUser.user_id;
     }
 
-    async addNewUser(addNewUserDto: AddNewUserDto): Promise<{ token: string }> {
-        const { username, password, admin_perm, avatar } = addNewUserDto;
+    async addNewUser(addNewUserDto: AddNewUserDto): Promise<User> {
+        const { username, password, role, avatar } = addNewUserDto;
 
-        const hashedPassword = await bcrypt.hash(password, 16);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user_id = await this.getLatestUserId() + 1;
 
         const user = await this.userModel.create({
@@ -40,14 +41,12 @@ export class UsersService {
             user_id,
             username,
             password: hashedPassword,
-            admin_perm,
+            role,
             avatar,
 
         });
 
-        const token = this.jwtService.sign({ id: user._id });
-
-        return { token }
+        return user
     }
 
     async getUser(username: string): Promise<User> {
@@ -65,8 +64,8 @@ export class UsersService {
     async updateUser(currentUserName: object, updateUserDto: UpdateUserDto): Promise<User> {
 
         const { password, admin_perm } = updateUserDto;
-        const hashedPassword = await bcrypt.hash(password, 16);
-        await this.userModel.updateOne(currentUserName, {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await this.userModel.updateOne({currentUserName}, {
             $set: {
                 password: hashedPassword,
                 admin_perm

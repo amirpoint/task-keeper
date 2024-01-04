@@ -6,21 +6,21 @@ import { User } from 'src/schemas/user.schema';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector, 
+  constructor(private reflector: Reflector,
     @InjectModel(User.name)
-    private userModel: Model<User>,) {}
+    private userModel: Model<User>,) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<number[]>('roles', context.getHandler());
     const request = context.switchToHttp().getRequest();
+    console.log(request.user);
     console.log(request);
-    console.log(roles);
     
     
     if (request?.user) {
       const { username } = request.user;
-      const user = await this.userModel.findOne({username});
-      return roles.includes(user.admin_perm);
+      const user = await this.userModel.findOne({ username });
+      return roles.includes(user.role);
     }
 
     return false;
