@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
-import { User } from "src/schemas/user.schema";
+import { Roles } from "src/auth/roles.decorator";
+import { ROLE, User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { UsersService } from "./users.service";
@@ -8,7 +9,9 @@ import { UsersService } from "./users.service";
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
+    
     @Post('users')
+    @Roles(ROLE.ADMIN)
     addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
         return this.usersService.addNewUser(addNewUserDto);
 
