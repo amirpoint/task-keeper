@@ -15,14 +15,15 @@ export class UsersController {
     }
 
     @Get('users/:username')
-    getUser(@Param() username): Promise<User> {
-        return this.usersService.getUser(username);
+    getUser(@Param() params: any): Promise<User> {
+        
+        return this.usersService.getUser(params.username);
 
     }
 
     @Patch('users/:username')
     updateUser(
-        @Param() username : string,
+        @Param() username : object,
         @Body() updateUserDto: UpdateUserDto
     ): Promise<User> {
         return this.usersService.updateUser(username, updateUserDto);
@@ -30,7 +31,7 @@ export class UsersController {
     }
 
     @Delete('users/:username')
-    deleteUser(@Param() username: string) : Promise<{ msg }> {
+    deleteUser(@Param() username: object) : Promise<{ msg }> {
         return this.usersService.deleteUser(username);
 
     }

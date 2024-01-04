@@ -1,13 +1,9 @@
-import { IsDefined, IsEnum, IsNotEmpty, IsNumber, MaxLength, MinLength } from "class-validator";
+import { IsEnum, IsNotEmpty, MaxLength, MinLength } from "class-validator";
 import { ROLES } from "src/schemas/user.schema";
 
 
 
 export class AddNewUserDto {
-    
-    @IsDefined()
-    @IsNumber()
-    readonly user_id: number;
     
     @IsNotEmpty({ message: 'username is required.'})
     readonly username: string;

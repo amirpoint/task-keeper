@@ -36,7 +36,7 @@ export class UsersService {
         const { username, password, admin_perm, avatar } = addNewUserDto;
 
         const hashedPassword = await bcrypt.hash(password, 16);
-        const user_id = await this.getLatestUserId()
+        const user_id = await this.getLatestUserId() + 1;
 
         const user = await this.userModel.create({
 
@@ -47,7 +47,7 @@ export class UsersService {
             avatar,
 
         });
-        
+
         const token = this.jwtService.sign({ id: user._id });
 
         return { token }
@@ -58,35 +58,39 @@ export class UsersService {
             username,
         }, {
             "_id": 0,
-            "__v": 0
+            "__v": 0,
+            "createdAt": 0,
+            "updatedAt": 0
         });
         return user;
     }
 
-    async updateUser(currentUserName: string, updateUserDto: UpdateUserDto): Promise<User> {
+    async updateUser(currentUserName: object, updateUserDto: UpdateUserDto): Promise<User> {
 
-        const { username, password, admin_perm } = updateUserDto;
+        const { password, admin_perm } = updateUserDto;
         const hashedPassword = await bcrypt.hash(password, 16);
-
-        await this.userModel.updateOne(
-            { username: currentUserName }, {
+        await this.userModel.updateOne(currentUserName, {
             $set: {
-                username,
                 password: hashedPassword,
                 admin_perm
             }
         });
 
-        const updatedUser = await this.userModel.findOne({ username });
+        const updatedUser = await this.userModel
+            .findOne(currentUserName, {
+            "_id": 0,
+            "__v": 0,
+            "createdAt": 0,
+            "updatedAt": 0
+        });
 
         return updatedUser;
     }
 
-    async deleteUser(username: string): Promise<{ msg }> {
+    async deleteUser(username: object): Promise<{ msg }> {
+        await this.userModel.deleteOne(username);
 
-        await this.userModel.deleteOne({username});
-
-        return { msg: 'Deleted successfully.'}
+        return { msg: 'Deleted successfully.' }
         // throw new Error("Method not implemented.");
     }
 }
