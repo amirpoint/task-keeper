@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
-import { Roles } from "src/common/roles.decorator";
-import { Role, User } from "src/schemas/user.schema";
+import { Roles } from "src/common/decorators/roles.decorator";
+import { Role, User } from "src/common/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { UsersService } from "./users.service";

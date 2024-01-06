@@ -1,5 +1,5 @@
 import { MinLength, IsEnum } from "class-validator";
-import { Role } from "src/schemas/user.schema";
+import { Role } from "src/common/schemas/user.schema";
 
 export class UpdateUserDto {
 

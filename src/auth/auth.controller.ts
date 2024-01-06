@@ -5,7 +5,7 @@ import { GetCurrentUser } from "src/common/decorators/current-user.decorator";
 import { ATGuard } from "src/common/guards";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "./dto/signin.dto";
-import { Tokens } from "./types";
+import { Tokens } from "../common/types";
 
 
 @Controller('auth')

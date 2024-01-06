@@ -2,10 +2,10 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt/dist";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Role, User } from "src/schemas/user.schema";
+import { Role, User } from "src/common/schemas/user.schema";
 import { SignInDto } from "./dto/signin.dto";
 import * as bcrypt from "bcrypt";
-import { Tokens } from "./types";
+import { Tokens } from "../common/types";
 import { ForbiddenException } from "@nestjs/common/exceptions/forbidden.exception";
 import { throwIfEmpty } from "rxjs";
 

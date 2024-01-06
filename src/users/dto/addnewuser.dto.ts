@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, MaxLength, MinLength } from "class-validator";
-import { Role } from "src/schemas/user.schema";
+import { Role } from "src/common/schemas/user.schema";
 
 
 
