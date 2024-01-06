@@ -1,11 +1,11 @@
 import { Body, Controller, HttpStatus, Post, UseGuards } from "@nestjs/common";
-import { Req } from "@nestjs/common/decorators";
-import { Request } from "express";
 import { GetCurrentUser } from "src/common/decorators/current-user.decorator";
 import { ATGuard } from "src/common/guards";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "./dto/signin.dto";
 import { Tokens } from "../common/types";
+import { AuthGuard } from "src/common/strategy";
+import { HttpCode, Res } from "@nestjs/common/decorators";
 
 
 @Controller('auth')
@@ -13,17 +13,17 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('login')
-    // @UseGuards(JwtAuthGuard)
     async signIn(@Body() signInDto: SignInDto): Promise<Tokens> {
 
         return this.authService.signIn(signInDto);
     }
 
-    @UseGuards(ATGuard)
+    @HttpCode(HttpStatus.OK)
     @Post('logout')
-    async signOut(@GetCurrentUser('username') username: string) {
-        return this.authService.signOut(username);
+    @UseGuards(AuthGuard)
+    async signOut(@GetCurrentUser() user: any) {
 
+        return this.authService.signOut(user.username);
     }
 
 }

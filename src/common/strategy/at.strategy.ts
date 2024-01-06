@@ -1,25 +1,34 @@
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { ConfigService } from "@nestjs/config";
-import { JwtPayload } from "src/common/types";
-
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException, } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class ATStrategy extends PassportStrategy(Strategy, 'jwt') {
-    constructor() {
-        super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: {
-                inject: [ConfigService],
-                useFactory: (config: ConfigService) => {
-                    return { secret: config.get<string>('AT_SECRET') }
-                }
+export class AuthGuard implements CanActivate {
+    constructor(private jwtService: JwtService) { }
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        try {
+            const request = context.switchToHttp().getRequest();
+            const { authorization }: any = request.headers;
+            if (!authorization || authorization.trim() === '') {
+                throw new UnauthorizedException('Please provide token');
             }
-        })
+            const authToken = authorization.replace(/bearer/gim, '').trim();
+
+            const resp = await this.validateToken(authToken);
+            request['user'] = resp;
+            
+            return true;
+        } catch (error) {
+            console .log('auth error - ', error.message);
+            throw new ForbiddenException(error.message || 'session expired! Please sign In');
+        }
     }
-    
-    async validate(payload: JwtPayload) {
-        return payload
+
+    validateToken(token: string) {
+        return this.jwtService.verify(token, {
+            secret : 'accesstokensecret'
+        });
     }
+
+
 }

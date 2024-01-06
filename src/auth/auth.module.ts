@@ -3,7 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PassportModule } from "@nestjs/passport";
-import { ATStrategy, RTStrategy } from "src/common/strategy";
+import { RTStrategy } from "src/common/strategy";
 import { UserSchema } from "src/common/schemas/user.schema";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -22,6 +22,6 @@ import { AuthService } from "./auth.service";
         MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     ],
     controllers: [AuthController],
-    providers: [AuthService, ATStrategy, RTStrategy],
+    providers: [AuthService, RTStrategy],
 })
 export class AuthModule{}

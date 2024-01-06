@@ -41,6 +41,8 @@ export class AuthService {
     }
 
     async signOut(username: string) {
+        console.log('signout func');
+        
         await this.userModel.updateMany({username}, {hashedRT: null});
     }
 
