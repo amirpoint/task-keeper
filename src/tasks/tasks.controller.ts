@@ -4,6 +4,7 @@ import { GetCurrentUser } from "src/common/decorators/current-user.decorator";
 import { Task } from "src/common/schemas/task.schema";
 import { AuthGuard } from "src/common/strategy";
 import { AddNewTaskDto } from "./dto/addnewtask.dto";
+import { UpdateTaskDto } from "./dto/updatetask.dto";
 import { TasksService } from "./tasks.service";
 
 
@@ -31,7 +32,7 @@ export class TasksController {
     @UseGuards(AuthGuard)
     @Get(':id')
     getTask(
-        @Param() id: string,
+        @Param() id: number,
         @GetCurrentUser() user: any,
     ): Promise<Task> {
 
@@ -40,13 +41,23 @@ export class TasksController {
 
     @UseGuards(AuthGuard)
     @Patch(':id')
-    updateTask(@Param() id: string) {
+    updateTask(
+        @Body() updateTaskDto: UpdateTaskDto,
+        @Param() id: number,
+        @GetCurrentUser() user: any,
+    ): Promise<Task> {
 
+        return this.tasksService.updateTask(user.username, id, updateTaskDto);
     }
 
     @UseGuards(AuthGuard)
     @Delete(':id')
-    deleteTask(@Param() id: string) {
+    deleteTask(
+        @Param() id: number,
+        @GetCurrentUser() user: any,
+    ): Promise<{ msg: string }> {
+        
+        return this.tasksService.deleteTask(user.username, id)
 
     }
 

@@ -5,6 +5,7 @@ import { Model } from "mongoose";
 import { Task } from "src/common/schemas/task.schema";
 import { User } from "src/common/schemas/user.schema";
 import { AddNewTaskDto } from "./dto/addnewtask.dto";
+import { UpdateTaskDto } from "./dto/updatetask.dto";
 
 const firstTaskId = 100;
 
@@ -41,7 +42,7 @@ export class TasksService {
         return tasks;
     }
 
-    async getTask(username, taskId): Promise<Task> {
+    async getTask(username: string, taskId: number): Promise<Task> {
         const user = await this.userModel.findOne({ username });
         const task = await this.taskModel.findOne({ taskId, assignedTo: user.user_id });
 
@@ -51,13 +52,38 @@ export class TasksService {
 
     }
 
+    async updateTask(username: string, taskId: number, updateTaskDto: UpdateTaskDto): Promise<Task> {
 
-    async updateTask() {
+        const user = await this.userModel.findOne({ username });
+        const task = await this.taskModel.findOne({ taskId, assignedTo: user.user_id });
+        const { name, priority, status, duration } = updateTaskDto;
+        if (!task) throw new ForbiddenException('Access Denied.')
 
+        await this.taskModel.updateOne({ taskId }, {
+            $set: {
+                name,
+                priority,
+                status,
+                duration
+            }
+        });
+
+        const updatedTask = await this.taskModel.findOne({ taskId }, {
+            "_id": 0,
+            "__v": 0,
+            "createdAt": 0,
+            "updatedAt": 0
+        });
+
+        return updatedTask;
     }
 
-    async deleteTask() {
+    async deleteTask(username: string, taskId: number): Promise<{ msg }> {
+        const user = await this.userModel.findOne({ username });
+        await this.taskModel.deleteOne({ taskId, assignedTo: user.user_id });
 
+        return { msg: 'Deleted successfully.' }
+        // throw new Error("Method not implemented.");
     }
 
     async getLatestTaskId() {
