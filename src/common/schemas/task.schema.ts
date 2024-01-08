@@ -20,7 +20,7 @@ export class Task {
     @Prop({ required: true })
     name: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     priority: Priority;
 
     @Prop({ required: false, default: 'in progress.' })
@@ -31,4 +31,4 @@ export class Task {
 
 }
 
-export const UserSchema = SchemaFactory.createForClass(Task);
+export const TaskSchema = SchemaFactory.createForClass(Task);

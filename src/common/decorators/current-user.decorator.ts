@@ -6,7 +6,6 @@ export const GetCurrentUser = createParamDecorator(
   async (data: keyof JwtPayloadWithRT | undefined, context) => {
 
     const request = context.switchToHttp().getRequest();
-    console.log(typeof request['user']);
     return request['user']
   }
   );

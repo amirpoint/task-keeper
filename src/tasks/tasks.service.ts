@@ -4,8 +4,10 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Task } from "src/common/schemas/task.schema";
 import { User } from "src/common/schemas/user.schema";
+import { File } from "src/common/schemas/file.schema";
 import { AddNewTaskDto } from "./dto/addnewtask.dto";
 import { UpdateTaskDto } from "./dto/updatetask.dto";
+
 
 const firstTaskId = 100;
 
@@ -16,13 +18,20 @@ export class TasksService {
         private taskModel: Model<Task>,
         @InjectModel(User.name)
         private userModel: Model<User>,
+        @InjectModel(File.name)
+        private fileModel: Model<File>,
+
     ) { }
 
 
-    async addNewTask(username: string, addNewTask: AddNewTaskDto): Promise<Task> {
+    async addNewTask(username: string, addNewTask: AddNewTaskDto, file): Promise<Task> {
         const { name, priority, status, duration } = addNewTask;
         const user = await this.userModel.findOne({ username });
         const taskId = await this.getLatestTaskId() + 1;
+        const _file = await this.fileModel.create({
+            attachedTo: taskId,
+            path: String(file.filename)
+        });
 
         const task = await this.taskModel.create({
             taskId,
