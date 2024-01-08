@@ -2,9 +2,9 @@ import { Controller, UploadedFile } from "@nestjs/common";
 import { Body, Delete, Get, Param, Patch, Post, UseGuards, UseInterceptors } from "@nestjs/common/decorators";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
-import { GetCurrentUser } from "src/common/decorators/current-user.decorator";
-import { Task } from "src/common/schemas/task.schema";
-import { AuthGuard } from "src/common/strategy";
+import { GetCurrentUser } from "src/common/decorators";
+import { Task } from "src/common/schemas";
+import { AccessTokenGuard } from "src/common/guards";
 import { AddNewTaskDto } from "./dto/addnewtask.dto";
 import { UpdateTaskDto } from "./dto/updatetask.dto";
 import { TasksService } from "./tasks.service";
@@ -20,7 +20,7 @@ export class TasksController {
             destination: './files',
         }),
     }))
-    @UseGuards(AuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Post('')
     addNewTask(
         @Body() AddNewTaskDto: AddNewTaskDto,
@@ -31,14 +31,14 @@ export class TasksController {
         return this.tasksService.addNewTask(user.username, AddNewTaskDto, file);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Get('')
     getAllTasks(@GetCurrentUser() user: any): Promise<any> {
 
         return this.tasksService.getAllTasks(user.username);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Get(':id')
     getTask(
         @Param() id: number,
@@ -48,7 +48,7 @@ export class TasksController {
         return this.tasksService.getTask(user.username, id);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Patch(':id')
     updateTask(
         @Body() updateTaskDto: UpdateTaskDto,
@@ -59,7 +59,7 @@ export class TasksController {
         return this.tasksService.updateTask(user.username, id, updateTaskDto);
     }
 
-    @UseGuards(AuthGuard)
+    @UseGuards(AccessTokenGuard)
     @Delete(':id')
     deleteTask(
         @Param() id: number,

@@ -2,9 +2,7 @@ import { ForbiddenException } from "@nestjs/common";
 import { Injectable } from "@nestjs/common/decorators";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Task } from "src/common/schemas/task.schema";
-import { User } from "src/common/schemas/user.schema";
-import { File } from "src/common/schemas/file.schema";
+import { Task, User, File } from "src/common/schemas";
 import { AddNewTaskDto } from "./dto/addnewtask.dto";
 import { UpdateTaskDto } from "./dto/updatetask.dto";
 

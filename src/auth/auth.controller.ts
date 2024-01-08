@@ -1,29 +1,37 @@
 import { Body, Controller, HttpStatus, Post, UseGuards } from "@nestjs/common";
-import { GetCurrentUser } from "src/common/decorators/current-user.decorator";
-import { ATGuard } from "src/common/guards";
 import { AuthService } from "./auth.service";
 import { SignInDto } from "./dto/signin.dto";
 import { Tokens } from "../common/types";
-import { AuthGuard } from "src/common/strategy";
-import { HttpCode, Res } from "@nestjs/common/decorators";
+import { AccessTokenGuard, RefreshTokenGuard } from "src/common/guards";
+import { HttpCode } from "@nestjs/common/decorators";
+import { GetCurrentUser, GetRefreshToken } from "src/common/decorators";
 
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) { }
 
+
     @Post('login')
     async signIn(@Body() signInDto: SignInDto): Promise<Tokens> {
-
         return this.authService.signIn(signInDto);
     }
 
     @HttpCode(HttpStatus.OK)
     @Post('logout')
-    @UseGuards(AuthGuard)
-    async signOut(@GetCurrentUser() user: any) {
+    @UseGuards(AccessTokenGuard)
+    async signOut(@GetCurrentUser() validate: any) {
 
-        return this.authService.signOut(user.username);
+        return this.authService.signOut(validate.username);
+    }
+
+    @Post('refresh')
+    @UseGuards(RefreshTokenGuard)
+    async refresh(
+        @GetCurrentUser() validate: any,
+        @GetRefreshToken() refreshToken: any,
+    ): Promise<Tokens> {
+        return this.authService.refresh(validate.username, refreshToken)
     }
 
 }

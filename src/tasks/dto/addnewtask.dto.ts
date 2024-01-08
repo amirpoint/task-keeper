@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from "class-validator";
-import { Priority } from "src/common/schemas/task.schema";
+import { Priority } from "src/common/schemas";
 
 export class AddNewTaskDto {
 

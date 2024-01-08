@@ -1,23 +1,18 @@
-import { IsEnum, IsNotEmpty, MaxLength, MinLength } from "class-validator";
-import { Role } from "src/common/schemas/user.schema";
+import { IsEnum, IsNotEmpty } from "class-validator";
+import { Role } from "src/common/schemas";
 
 
 
 export class AddNewUserDto {
-    
-    @IsNotEmpty({ message: 'username is required.'})
+
+    @IsNotEmpty({ message: 'username is required.' })
     readonly username: string;
 
-    @IsNotEmpty({ message: 'password is required.'})
-    @MinLength(8, { message: 'too short pw.'})
-    // @MaxLength(16, { message: 'too long pw.'})
+    @IsNotEmpty({ message: 'password is required.' })
     readonly password: string;
 
-    @IsNotEmpty({ message: 'role is required.'})
+    @IsNotEmpty({ message: 'role is required.' })
     @IsEnum(Role)
     readonly role: Role;
-    
-    readonly avatar: string;
-
 
 }

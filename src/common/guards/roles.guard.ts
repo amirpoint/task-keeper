@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/common/schemas/user.schema';
+import { User } from 'src/common/schemas';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -13,13 +13,11 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<number[]>('roles', context.getHandler());
     const request = context.switchToHttp().getRequest();
-    console.log(request.user);
-    
-    
+
     if (request?.user) {
       const { username } = request.user;
       const user = await this.userModel.findOne({ username });
-      
+
       return roles.includes(user.role);
     }
 

@@ -5,6 +5,7 @@ import { User } from "src/common/schemas/user.schema";
 import * as bcrypt from "bcrypt";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 const firstUserId = 100;
 
@@ -28,22 +29,20 @@ export class UsersService {
     }
 
     async addNewUser(addNewUserDto: AddNewUserDto, file): Promise<User> {
-        const { username, password, role, avatar } = addNewUserDto;
+        const { username, password, role } = addNewUserDto;
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user_id = await this.getLatestUserId() + 1;
 
         const user = await this.userModel.create({
-
             user_id,
             username,
             password: hashedPassword,
             role,
             avatar: file.filename,
-
         });
 
-        return user
+        return user;
     }
 
     async getUser(username: string): Promise<User> {
@@ -55,37 +54,41 @@ export class UsersService {
             "createdAt": 0,
             "updatedAt": 0
         });
+        if (!user) throw new HttpException('User not found.', HttpStatus.NOT_FOUND)
+
         return user;
     }
 
-    async updateUser(currentUserName: object, updateUserDto: UpdateUserDto): Promise<User> {
+    async updateUser(currentUserName: string, updateUserDto: UpdateUserDto): Promise<User> {
+        
+        const currentUser = await this.userModel.findOne({currentUserName})
+        if (!currentUser) throw new HttpException('User not found.', HttpStatus.NOT_FOUND)
 
-        const { password, admin_perm } = updateUserDto;
+        const { username, password, admin_perm } = updateUserDto;
         const hashedPassword = await bcrypt.hash(password, 10);
-        await this.userModel.updateOne({currentUserName}, {
+        await this.userModel.updateOne({ currentUserName }, {
             $set: {
+                username,
                 password: hashedPassword,
                 admin_perm
             }
         });
 
         const updatedUser = await this.userModel
-            .findOne(currentUserName, {
-            "_id": 0,
-            "__v": 0,
-            "createdAt": 0,
-            "updatedAt": 0
-        });
+            .findOne({username}, {
+                "_id": 0,
+                "__v": 0,
+                "createdAt": 0,
+                "updatedAt": 0
+            });
 
         return updatedUser;
     }
 
-    async deleteUser(username: object): Promise<{ msg }> {
-        await this.userModel.deleteOne(username);
+    async deleteUser(username: string): Promise<{ msg }> {
 
         await this.userModel.deleteOne({ username });
 
         return { msg: 'Deleted successfully.' }
-        // throw new Error("Method not implemented.");
     }
 }
