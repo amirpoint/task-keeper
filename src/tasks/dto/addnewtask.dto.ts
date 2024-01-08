@@ -6,8 +6,8 @@ export class AddNewTaskDto {
     @IsNotEmpty({ message: 'name is required.' })
     readonly name: string;
 
-    @IsNotEmpty({ message: 'priority is required.' })
-    @IsEnum(Priority)
+    // @IsNotEmpty({ message: 'priority is required.' })
+    // @IsEnum(Priority)
     readonly priority: Priority;
 
     readonly status: string;
