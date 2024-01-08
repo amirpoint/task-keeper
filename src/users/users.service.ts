@@ -29,8 +29,8 @@ export class UsersService {
         return latestUser.user_id;
     }
 
-    async addNewUser(addNewUserDto: AddNewUserDto): Promise<User> {
-        const { username, password, role, avatar } = addNewUserDto;
+    async addNewUser(addNewUserDto: AddNewUserDto, file): Promise<{ token: string }> {
+        const { username, password, admin_perm, avatar } = addNewUserDto;
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user_id = await this.getLatestUserId() + 1;
@@ -40,8 +40,8 @@ export class UsersService {
             user_id,
             username,
             password: hashedPassword,
-            role,
-            avatar,
+            admin_perm,
+            avatar: file.filename,
 
         });
 
@@ -84,6 +84,8 @@ export class UsersService {
 
     async deleteUser(username: object): Promise<{ msg }> {
         await this.userModel.deleteOne(username);
+
+        await this.userModel.deleteOne({ username });
 
         return { msg: 'Deleted successfully.' }
         // throw new Error("Method not implemented.");
