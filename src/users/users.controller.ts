@@ -1,19 +1,29 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Roles } from "src/auth/roles.decorator";
 import { ROLE, User } from "src/schemas/user.schema";
 import { AddNewUserDto } from "./dto/addnewuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
 import { UsersService } from "./users.service";
+import { diskStorage } from "multer";
 
 @Controller('dashboard')
 export class UsersController {
     constructor(private usersService: UsersService) { }
 
-    
+
+    @UseInterceptors(FileInterceptor('attachedFile', {
+        storage: diskStorage({
+            destination: './files',
+        }),
+    }))
     @Post('users')
     @Roles(ROLE.ADMIN)
-    addNewUser(@Body() addNewUserDto: AddNewUserDto): Promise<{ token }> {
-        return this.usersService.addNewUser(addNewUserDto);
+    addNewUser(
+        @Body() addNewUserDto: AddNewUserDto,
+        @UploadedFile() file: any
+    ): Promise<{ token }> {
+        return this.usersService.addNewUser(addNewUserDto, file);
 
     }
 
@@ -25,7 +35,7 @@ export class UsersController {
 
     @Patch('users/:username')
     updateUser(
-        @Param() username : string,
+        @Param() username: string,
         @Body() updateUserDto: UpdateUserDto
     ): Promise<User> {
         return this.usersService.updateUser(username, updateUserDto);
@@ -33,7 +43,7 @@ export class UsersController {
     }
 
     @Delete('users/:username')
-    deleteUser(@Param() username: string) : Promise<{ msg }> {
+    deleteUser(@Param() username: string): Promise<{ msg }> {
         return this.usersService.deleteUser(username);
 
     }
