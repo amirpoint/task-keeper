@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors, UseGuards } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Roles } from "src/auth/roles.decorator";
-import { ROLE, Roles } from "src/common/decorators/roles.decorator";
 import { RolesGuard } from "src/common/roles.guard";
 import { Role, User } from "src/common/schemas/user.schema";
 import { AuthGuard } from "src/common/strategy";
@@ -21,13 +20,12 @@ export class UsersController {
         }),
     }))
     @UseGuards(AuthGuard, RolesGuard)
-    @Roles(Role.ADMIN)
     @Post('users')
-    @Roles(ROLE.ADMIN)
+    @Roles(Role.ADMIN)
     addNewUser(
         @Body() addNewUserDto: AddNewUserDto,
         @UploadedFile() file: any
-    ): Promise<{ token }> {
+    ): Promise<User> {
         return this.usersService.addNewUser(addNewUserDto, file);
 
     }
@@ -45,7 +43,7 @@ export class UsersController {
     @Roles(Role.ADMIN)
     @Patch('users/:username')
     updateUser(
-        @Param() username: string,
+        @Param() username: object,
         @Body() updateUserDto: UpdateUserDto
         ): Promise<User> {
             return this.usersService.updateUser(username, updateUserDto);
@@ -55,7 +53,7 @@ export class UsersController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.ADMIN)
     @Delete('users/:username')
-    deleteUser(@Param() username: string): Promise<{ msg }> {
+    deleteUser(@Param() username: object): Promise<{ msg }> {
         return this.usersService.deleteUser(username);
 
     }

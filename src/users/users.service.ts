@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common/decorators";
-import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "src/common/schemas/user.schema";
@@ -14,7 +13,6 @@ export class UsersService {
     constructor(
         @InjectModel(User.name)
         private userModel: Model<User>,
-        private jwtService: JwtService,
     ) { }
 
     async getLatestUserId() {
@@ -29,8 +27,8 @@ export class UsersService {
         return latestUser.user_id;
     }
 
-    async addNewUser(addNewUserDto: AddNewUserDto, file): Promise<{ token: string }> {
-        const { username, password, admin_perm, avatar } = addNewUserDto;
+    async addNewUser(addNewUserDto: AddNewUserDto, file): Promise<User> {
+        const { username, password, role, avatar } = addNewUserDto;
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user_id = await this.getLatestUserId() + 1;
@@ -40,7 +38,7 @@ export class UsersService {
             user_id,
             username,
             password: hashedPassword,
-            admin_perm,
+            role,
             avatar: file.filename,
 
         });
