@@ -1,7 +1,7 @@
 
 ## Description
 
-[A Nest.js API](https://www.postman.com/orbital-module-saganist-96879429/workspace/public/documentation/31730966-b25f4e72-1ef8-4f9b-a3d5-425ac5642f2c) for task management system with admin system
+A Nest.js [Rest API](https://www.postman.com/orbital-module-saganist-96879429/workspace/public/documentation/31730966-b25f4e72-1ef8-4f9b-a3d5-425ac5642f2c) for task management system with admin system
 
 ## Installation
 
